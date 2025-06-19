@@ -18,7 +18,7 @@ reg TAKEN_BRANCH;
 initial begin
     HALTED=0;
     TAKEN_BRANCH=0; 
-    PC = 0; // Initialize PC to 0
+    PC = 0; 
 end
 always @(posedge clk1) begin
     if(HALTED==0) begin
@@ -86,23 +86,23 @@ always @(posedge clk1) begin
 
             
             LOAD: begin
-                EX_MEM_ALUOut <= #2 ID_EX_A + ID_EX_Imm; // address calculation
-                EX_MEM_B <= #2 ID_EX_B; // not used
+                EX_MEM_ALUOut <= #2 ID_EX_A + ID_EX_Imm;
+                EX_MEM_B <= #2 ID_EX_B; 
             end
             
             STORE: begin
-                EX_MEM_ALUOut <= #2 ID_EX_A + ID_EX_Imm; // address calculation
-                EX_MEM_B <= #2 ID_EX_B; // data to store
+                EX_MEM_ALUOut <= #2 ID_EX_A + ID_EX_Imm; 
+                EX_MEM_B <= #2 ID_EX_B;
             end
             
             BRANCH: begin
-                EX_MEM_ALUOut <= #2 ID_EX_NPC + ID_EX_Imm; // branch target address
+                EX_MEM_ALUOut <= #2 ID_EX_NPC + ID_EX_Imm; 
                 if (ID_EX_IR[31:26] == BEQ) begin
-                    EX_MEM_cond <= #2 (ID_EX_A == ID_EX_B); // condition for BEQ
+                    EX_MEM_cond <= #2 (ID_EX_A == ID_EX_B); 
                 end else if (ID_EX_IR[31:26] == BNE) begin
-                    EX_MEM_cond <= #2 (ID_EX_A != ID_EX_B); // condition for BNE
+                    EX_MEM_cond <= #2 (ID_EX_A != ID_EX_B); 
                 end else begin
-                    EX_MEM_cond <= #2 1'b0; // default case
+                    EX_MEM_cond <= #2 1'b0; 
                 end
             end
         endcase      
@@ -115,17 +115,17 @@ always @(posedge clk2) begin
         MEM_WB_IR <= #2 EX_MEM_IR;
         case (EX_MEM_type)
             RR_ALU, RM_Alu: begin
-                MEM_WB_ALUOut <= #2 EX_MEM_ALUOut; // ALU result
-                MEM_WB_LMD <= #2 32'hxxxxxxxx; // not used
+                MEM_WB_ALUOut <= #2 EX_MEM_ALUOut;
+                MEM_WB_LMD <= #2 32'hxxxxxxxx; 
             end
             
             LOAD: begin
-                MEM_WB_ALUOut <= #2 EX_MEM_ALUOut; // address for load
-                MEM_WB_LMD <= #2 memory[EX_MEM_ALUOut]; // load data from memory
+                MEM_WB_ALUOut <= #2 EX_MEM_ALUOut; 
+                MEM_WB_LMD <= #2 memory[EX_MEM_ALUOut]; 
             end
             
             STORE: if (TAKEN_BRANCH ==0) begin
-                memory[EX_MEM_ALUOut] <= #2 EX_MEM_B; // store data to memory
+                memory[EX_MEM_ALUOut] <= #2 EX_MEM_B; 
                 
             end
         endcase    
@@ -150,7 +150,7 @@ always @(posedge clk1) begin
             end
 
             HALT: begin
-                HALTED <= #2 1'b1; // set HALTED flag
+                HALTED <= #2 1'b1; 
             end
         endcase
     end
